@@ -19,7 +19,7 @@ import os
 # Sprite scaling. Make this larger, like 0.5 to zoom in and add
 # 'mystery' to what you can see. Make it smaller, like 0.1 to see
 # more of the map.
-WALL_SPRITE_SCALING = .50
+WALL_SPRITE_SCALING = .60
 PLAYER_SPRITE_SCALING = .45  # 0.25
 
 WALL_SPRITE_SIZE = int(128 * WALL_SPRITE_SCALING)
