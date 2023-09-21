@@ -21,7 +21,7 @@ import os
 # more of the map.
 WALL_SPRITE_SCALING = .60
 PLAYER_SPRITE_SCALING = .45  # 0.25
-
+MONSTER_SPRITE_SCALING = 1
 WALL_SPRITE_SIZE = int(128 * WALL_SPRITE_SCALING)
 
 # How big the grid is
@@ -78,8 +78,38 @@ class PlayerSprite(arcade.Sprite):
             self.texture = self.textures[TEXTURE_RIGHT]
 
 
+class MonsterSprite(arcade.Sprite):
+
+    def __init__(self):
+        super().__init__()
+
+        self.scale = MONSTER_SPRITE_SCALING
+        self.textures = []
+
+        # Load a left facing texture and a right facing texture.
+        # flipped_horizontally=True will mirror the image we load.
+        texture = arcade.load_texture("troll.png")
+        self.textures.append(texture)
+        texture = arcade.load_texture("troll.png", flipped_horizontally=True)
+        self.textures.append(texture)
+
+        # By default, face right.
+        self.texture = texture
+
+    def update(self):
+        self.center_x += self.change_x
+        self.center_y += self.change_y
+
+        # Figure out if we should face left or right
+        if self.change_x < 0:
+            self.texture = self.textures[TEXTURE_LEFT]
+        elif self.change_x > 0:
+            self.texture = self.textures[TEXTURE_RIGHT]
+
+
 class Room:
     """ A room """
+
     def __init__(self, r, c, h, w):
         self.row = r
         self.col = c
@@ -89,6 +119,7 @@ class Room:
 
 class RLDungeonGenerator:
     """ Generate the dungeon """
+
     def __init__(self, w, h):
         """ Create the board """
         self.MAX = 15  # Cutoff for when we want to stop dividing sections
@@ -309,11 +340,14 @@ class MyGame(arcade.Window):
         os.chdir(file_path)
 
         self.player_sprite_list = None
+        self.monster_sprite_list = None
         self.direction = ""  # added myself
         self.grid = None
         self.wall_list = None
         self.player_list = None
+        self.monster_list = None
         self.player_sprite = None
+        self.monster_sprite = None
         self.view_bottom = 0
         self.view_left = 0
         self.physics_engine = None
@@ -327,7 +361,7 @@ class MyGame(arcade.Window):
         """ Set up the game """
         self.wall_list = arcade.SpriteList(use_spatial_hash=True)
         self.player_list = arcade.SpriteList()
-
+        self.monster_list = arcade.SpriteList()
         # Create cave system using a 2D grid
         dg = RLDungeonGenerator(GRID_WIDTH, GRID_HEIGHT)
         dg.generate_map()
@@ -362,9 +396,9 @@ class MyGame(arcade.Window):
 
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
-
                     wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", WALL_SPRITE_SCALING,
                                          repeat_count_x=column_count)
+
                     wall.center_x = column_mid * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.width = WALL_SPRITE_SIZE * column_count
@@ -379,9 +413,6 @@ class MyGame(arcade.Window):
         self.player_sprite.center_x = WINDOW_WIDTH / 2
         self.player_sprite.center_y = WINDOW_HEIGHT / 2
         self.player_sprite_list.append(self.player_sprite)
-
-        # self.player_sprite = arcade.Sprite("telengard.png", PLAYER_SPRITE_SCALING)
-
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.
@@ -392,7 +423,7 @@ class MyGame(arcade.Window):
             self.player_sprite.center_x = random.randrange(AREA_WIDTH)
             self.player_sprite.center_y = random.randrange(AREA_HEIGHT)
 
-            # Are we in a wall?
+            # is player in a wall?
             walls_hit = arcade.check_for_collision_with_list(self.player_sprite, self.wall_list)
             if len(walls_hit) == 0:
                 # Not in a wall! Success!
@@ -400,6 +431,44 @@ class MyGame(arcade.Window):
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
                                                          self.wall_list)
+        # Set up the monster
+        # Sprite lists
+        self.monster_sprite_list = arcade.SpriteList()
+
+        # Set up the monster
+        self.monster_sprite = MonsterSprite()
+        self.monster_sprite.center_x = WINDOW_WIDTH / 2
+        self.monster_sprite.center_y = WINDOW_HEIGHT / 2
+        self.monster_sprite_list.append(self.player_sprite)
+
+        # self.player_sprite = arcade.Sprite("telengard.png", PLAYER_SPRITE_SCALING)
+
+        self.monster_list.append(self.monster_sprite)
+
+        # place the monster. If in a wall or colliding with player, repeat until we aren't.
+        monster_placed = False
+        move_over_x = 0
+        move_over_y = 0
+        while not monster_placed:
+
+            # Randomly position
+            # self.monster_sprite.center_x = random.randrange(AREA_WIDTH)
+            # self.monster_sprite.center_y = random.randrange(AREA_HEIGHT)
+
+            self.monster_sprite.center_x = self.player_sprite.center_x - 100 + move_over_x
+            self.monster_sprite.center_y = self.player_sprite.center_y - 100 + move_over_y
+
+            # is monster in a wall or colliding with player?
+            monster_walls_hit = arcade.check_for_collision_with_list(self.monster_sprite, self.wall_list)
+            monster_player_hit = arcade.check_for_collision_with_list(self.monster_sprite, self.player_list)
+            if len(monster_walls_hit) == 0 and len(monster_player_hit) == 0:
+                # Not in a wall and not colliding with player! Success!
+                monster_placed = True
+            else:
+                move_over_x += 10
+                move_over_y += 10
+
+        # self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
     def on_draw(self):
         """ Render the screen. """
@@ -414,6 +483,7 @@ class MyGame(arcade.Window):
         # Draw the sprites
         self.wall_list.draw()
         self.player_list.draw()
+        self.monster_list.draw()
 
         # Draw info on the screen
         sprite_count = len(self.wall_list)
