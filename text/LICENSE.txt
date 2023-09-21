@@ -17,7 +17,7 @@ All elements designated as Reserved Material under the ORC License.
 EXPRESSLY DESIGNATED LICENSED MATERIAL
 The following elements are owned by the Licensor and would otherwise
 constitute Reserved Material and are hereby designated as LICENSED MATERIAL:
-Python code, ASCII Artwork, Tinbar, The Northern Kingdom and Northern Library, the Realm of Sauengard and associated characters,
-locations, lore, and titles including, but not limited to Deaf One, Wicked Queen Jannbrielle, Vozzbozz, Si'Kira, and
-Tor'bron.
+Python code, ASCII Artwork, Tinbar, The Northern Kingdom and Northern Library, the Realm of Sauengard and associated
+characters, locations, lore, and titles including, but not limited to Deaf One, Wicked Queen Jannbrielle, Vozzbozz,
+Si'Kira, and Tor'bron.
 
