@@ -17,14 +17,15 @@ import os
 # Sprite scaling. Make this larger, like 0.5 to zoom in and add
 # 'mystery' to what you can see. Make it smaller, like 0.1 to see
 # more of the map.
-WALL_SPRITE_SCALING = .60
+WALL_SPRITE_SCALING = .70
 PLAYER_SPRITE_SCALING = .45  # 0.25
 MONSTER_SPRITE_SCALING = 1
 WALL_SPRITE_SIZE = int(128 * WALL_SPRITE_SCALING)
 
 # How big the grid is
-GRID_WIDTH = 200
-GRID_HEIGHT = 200
+# 100 x 100 is default
+GRID_WIDTH = 100
+GRID_HEIGHT = 100
 
 AREA_WIDTH = GRID_WIDTH * WALL_SPRITE_SIZE
 AREA_HEIGHT = GRID_HEIGHT * WALL_SPRITE_SIZE
@@ -172,8 +173,9 @@ class RLDungeonGenerator:
 
             # The actual room's height and width will be 60-100% of the
             # available section.
-            room_width = round(random.randrange(60, 100) / 100 * section_width)
-            room_height = round(random.randrange(60, 100) / 100 * section_height)
+            # ****I changed this to 30-50%****
+            room_width = round(random.randrange(30, 50) / 100 * section_width)
+            room_height = round(random.randrange(30, 50) / 100 * section_height)
 
             # If the room doesn't occupy the entire section we are carving it from,
             # 'jiggle' it a bit in the square
@@ -190,6 +192,7 @@ class RLDungeonGenerator:
             self.rooms.append(Room(room_start_row, room_start_col, room_height, room_width))
             for r in range(room_start_row, room_start_row + room_height):
                 for c in range(room_start_col, room_start_col + room_width):
+
                     self.dungeon[r][c] = '.'
 
     @staticmethod
@@ -327,7 +330,7 @@ class MyGame(arcade.Window):
     """
 
     def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+        super().__init__(width, height, title, resizable=True)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own
@@ -467,6 +470,15 @@ class MyGame(arcade.Window):
                 move_over_y += 10
 
         # self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
+
+    def on_resize(self, width, height):
+        """ This method is automatically called when the window is resized. """
+
+        # Call the parent. Failing to do this will mess up the coordinates,
+        # and default to 0,0 at the center and the edges being -1 to 1.
+        super().on_resize(width, height)
+
+        print(f"Window resized to: {width}, {height}")
 
     def on_draw(self):
         """ Render the screen. """
