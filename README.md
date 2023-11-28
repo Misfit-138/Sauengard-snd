@@ -10,14 +10,15 @@ Telengard by Daniel Lawrence, as well as Milton Bradley's
 brilliant Dark Tower tabletop electronic board game.
 It is a fun and immersive RPG with relatively sophisticated 
 battle system, great loot and inventory, customizable character
-creation, an epic quest, and leveling.
+creation, an epic quest, and leveling. This version features evocative
+background scores as well as mechanical computer sounds like keyboards and
+floppy drives.
 
 ## Development:
 
-- Development is ongoing. Currently built on/for Windows,
-with sound. GNU/Linux should work, but without sound. Anyone
-willing to help with a GNU/Linux sound port is welcome. It
-should be quite simple. Please contact me at: 
+- Currently built on/for Windows, with sound. GNU/Linux should work,
+but without sound. Anyone willing to help with a GNU/Linux sound port is welcome.
+It should be quite simple. Please contact me at: 
 pitsker@proton.me
 
 ## Installation:
