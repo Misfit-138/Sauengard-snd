@@ -73,7 +73,7 @@ Sauengard, Copyright 2022,2023, by Jules Pitsker.
 
 RESERVED MATERIAL
 Reserved Material elements in this product include, but may not be limited to:
-The ABOUT section.
+The ABOUT section, and
 All elements designated as Reserved Material under the ORC License.
 
 EXPRESSLY DESIGNATED LICENSED MATERIAL
